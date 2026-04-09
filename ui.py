@@ -95,21 +95,19 @@ class SnipWindow(QWidget):
 
                     QApplication.clipboard().setPixmap(safe_pixmap)
                     print("Copied safe screenshot to clipboard")
-
-                    if callable(self.on_done) and not self._done_called:
-                        try:
-                            self.on_done(safe_pixmap, filename)
-                        finally:
-                            self._done_called = True
                 except Exception as exc:
                     print(f"Error during Safe Snip processing: {exc}")
-                    if callable(self.on_done) and not self._done_called:
-                        try:
-                            self.on_done(None, None)
-                        finally:
-                            self._done_called = True
 
-            self.close()
+                # Call on_done and close after successful snip
+                if callable(self.on_done) and not self._done_called:
+                    self.on_done(safe_pixmap, filename)
+                    self._done_called = True
+                self.close()
+            else:
+                # Rectangle too small, reset for another attempt
+                self.begin = None
+                self.end = None
+                self.update()
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key.Key_Escape:
