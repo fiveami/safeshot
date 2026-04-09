@@ -64,7 +64,8 @@ class SnipWindow(QWidget):
             self.end = event.pos()
             rect = QRect(self.begin, self.end).normalized()
 
-            if rect.width() > 0 and rect.height() > 0:
+            MIN_PIXEL_THRESHOLD = 10
+            if rect.width() >= MIN_PIXEL_THRESHOLD and rect.height() >= MIN_PIXEL_THRESHOLD:
                 try:
                     try:
                         scale = float(self.desktop_pixmap.devicePixelRatioF())
